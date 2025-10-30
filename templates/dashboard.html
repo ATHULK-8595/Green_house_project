@@ -41,7 +41,7 @@
             <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-red-500 flex justify-between items-center">
                 <div>
                     <p class="text-xl font-semibold text-gray-700">Window / Cooling</p>
-                    <p class="text-sm text-gray-500 mt-1">Controlled by Temperature</p>
+                    <p class="text-sm text-gray-500 mt-1">Controlled by Temperature & Humidity</p>
                 </div>
                 <div id="status-window" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-400">---</div>
             </div>
@@ -51,6 +51,19 @@
                     <p class="text-sm text-gray-500 mt-1">Controlled by Soil Moisture & Rain</p>
                 </div>
                 <div id="status-water" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-400">---</div>
+            </div>
+        </div>
+
+        <!-- Control Limits Section -->
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Control Limits</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-green-500">
+                <p class="text-xl font-semibold text-gray-700">Window/Cooling</p>
+                <p class="text-sm text-gray-500 mt-1">Turns ON when temperature is above <strong>28.0°C</strong> or humidity is above <strong>80.0%</strong></p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-cyan-500">
+                <p class="text-xl font-semibold text-gray-700">Irrigation/Water Pump</p>
+                <p class="text-sm text-gray-500 mt-1">Turns ON when moisture is above <strong>2500</strong> and it's not raining.</p>
             </div>
         </div>
 
