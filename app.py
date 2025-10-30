@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import sqlite3
 from datetime import datetime
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app)
 
 def init_db():
     conn = sqlite3.connect('greenhouse.db')
@@ -31,11 +33,14 @@ def sensor_data():
     data = request.json
     conn = sqlite3.connect('greenhouse.db')
     cursor = conn.cursor()
+    
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     cursor.execute('''
         INSERT INTO logs (timestamp, temperature, humidity, moisture, rain_analog, rain_digital, relay_window, relay_water)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
-        datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        timestamp,
         data.get('temperature'),
         data.get('humidity'),
         data.get('moisture'),
@@ -45,7 +50,17 @@ def sensor_data():
         data.get('relay_water')
     ))
     conn.commit()
+    
+    # After saving, fetch the newly inserted record to broadcast
+    cursor.execute('SELECT * FROM logs ORDER BY id DESC LIMIT 1')
+    new_log_row = cursor.fetchone()
     conn.close()
+
+    if new_log_row:
+        keys = ['id', 'timestamp', 'temperature', 'humidity', 'moisture', 'rain_analog', 'rain_digital', 'relay_window', 'relay_water']
+        new_log_dict = dict(zip(keys, new_log_row))
+        socketio.emit('new_data', new_log_dict)
+
     return jsonify({"status": "success"})
 
 @app.route('/api/latest', methods=['GET'])
@@ -79,6 +94,6 @@ def dashboard():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, host='0.0.0.0', port="1234")
+    socketio.run(app, debug=True, host='0.0.0.0', port=1234)
 
 # this code is for server

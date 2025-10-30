@@ -76,17 +76,17 @@
             </table>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
-    function fetchCurrent() {
-        fetch("/api/latest").then(resp=>resp.json()).then(data=>{
-            document.getElementById('display-temp').textContent = data.temperature !== undefined ? (data.temperature.toFixed(2) + "°C") : "--°C";
-            document.getElementById('display-humidity').textContent = data.humidity !== undefined ? (data.humidity.toFixed(2) + "%") : "--%";
-            document.getElementById('display-moisture').textContent = data.moisture !== undefined ? data.moisture : '--';
-            document.getElementById('display-rain').textContent = (data.rain_digital !== undefined) ? (data.rain_digital == 0 ? "Raining/Wet" : "Dry/Clear") : "---";
-            updateStatus('status-window', data.relay_window);
-            updateStatus('status-water', data.relay_water);
-        });
+    function updateLatestData(data) {
+        document.getElementById('display-temp').textContent = data.temperature !== undefined ? (data.temperature.toFixed(2) + "°C") : "--°C";
+        document.getElementById('display-humidity').textContent = data.humidity !== undefined ? (data.humidity.toFixed(2) + "%") : "--%";
+        document.getElementById('display-moisture').textContent = data.moisture !== undefined ? data.moisture : '--';
+        document.getElementById('display-rain').textContent = (data.rain_digital !== undefined) ? (data.rain_digital == 0 ? "Raining/Wet" : "Dry/Clear") : "---";
+        updateStatus('status-window', data.relay_window);
+        updateStatus('status-water', data.relay_water);
     }
+
     function updateStatus(id, status) {
         const element = document.getElementById(id);
         element.textContent = status || 'OFF';
@@ -101,10 +101,39 @@
             element.classList.add('bg-gray-400');
         }
     }
-    function fetchLogs() {
+
+    function prependLog(log) {
+        const logBody = document.getElementById('log-body');
+        let newRow = `<tr>
+            <td>${log.timestamp}</td>
+            <td>${log.temperature != null ? log.temperature.toFixed(2) : '--'}</td>
+            <td>${log.humidity != null ? log.humidity.toFixed(2) : '--'}</td>
+            <td>${log.moisture}</td>
+            <td>${log.rain_analog}</td>
+            <td>${log.rain_digital == 0 ? "Raining/Wet" : "Dry/Clear"}</td>
+            <td>${log.relay_window}</td>
+            <td>${log.relay_water}</td>
+        </tr>`;
+        logBody.insertAdjacentHTML('afterbegin', newRow);
+        // Keep the log table to a reasonable size
+        while (logBody.rows.length > 100) {
+            logBody.deleteRow(logBody.rows.length - 1);
+        }
+    }
+
+    function fetchInitialData() {
+        // Fetch latest data for immediate display
+        fetch("/api/latest").then(resp=>resp.json()).then(data=>{
+            if(data && data.id) {
+                updateLatestData(data);
+            }
+        });
+
+        // Fetch recent logs for initial table population
         fetch("/api/logs")
         .then(resp=>resp.json())
         .then(logs=>{
+            const logBody = document.getElementById('log-body');
             let html = "";
             for(let log of logs) {
                 html += `<tr>
@@ -118,13 +147,19 @@
                     <td>${log.relay_water}</td>
                 </tr>`;
             }
-            document.getElementById('log-body').innerHTML = html;
+            logBody.innerHTML = html;
         });
     }
-    fetchCurrent();
-    fetchLogs();
-    setInterval(fetchCurrent, 3000);
-    setInterval(fetchLogs, 7000);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInitialData();
+
+        const socket = io();
+        socket.on('new_data', function(data) {
+            updateLatestData(data);
+            prependLog(data);
+        });
+    });
     </script>
 </body>
 </html>
