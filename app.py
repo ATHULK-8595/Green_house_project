@@ -31,6 +31,7 @@ def init_db():
 def sensor_data():
     # Accept data from ESP32
     data = request.json
+    print(data)
     conn = sqlite3.connect('greenhouse.db')
     cursor = conn.cursor()
     

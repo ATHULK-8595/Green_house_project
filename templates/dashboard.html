@@ -7,83 +7,83 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
+        body { font-family: 'Inter', sans-serif; background-color: #111827; color: #e5e7eb; }
         .log-table th, .log-table td { padding: 0.5rem 1rem; }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
     <div id="app" class="max-w-5xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Smart Greenhouse Monitor</h1>
+        <h1 class="text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-2">Smart Greenhouse Monitor</h1>
         
         <!-- Sensor Data Section -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-xl shadow-lg border-t-4 border-indigo-500">
-                <p class="text-sm text-gray-500 font-medium">Temperature</p>
-                <p class="text-3xl font-extrabold text-indigo-700 mt-1" id="display-temp">--°C</p>
+            <div class="bg-gray-800 p-4 rounded-xl shadow-lg border-t-4 border-indigo-500">
+                <p class="text-sm text-gray-400 font-medium">Temperature</p>
+                <p class="text-3xl font-extrabold text-indigo-400 mt-1" id="display-temp">--°C</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-lg border-t-4 border-teal-500">
-                <p class="text-sm text-gray-500 font-medium">Humidity</p>
-                <p class="text-3xl font-extrabold text-teal-700 mt-1" id="display-humidity">--%</p>
+            <div class="bg-gray-800 p-4 rounded-xl shadow-lg border-t-4 border-teal-500">
+                <p class="text-sm text-gray-400 font-medium">Humidity</p>
+                <p class="text-3xl font-extrabold text-teal-400 mt-1" id="display-humidity">--%</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-lg border-t-4 border-amber-500">
-                <p class="text-sm text-gray-500 font-medium">Moisture</p>
-                <p class="text-3xl font-extrabold text-amber-700 mt-1" id="display-moisture">--</p>
+            <div class="bg-gray-800 p-4 rounded-xl shadow-lg border-t-4 border-amber-500">
+                <p class="text-sm text-gray-400 font-medium">Moisture</p>
+                <p class="text-3xl font-extrabold text-amber-400 mt-1" id="display-moisture">--</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-lg border-t-4 border-sky-500">
-                <p class="text-sm text-gray-500 font-medium">Rain</p>
-                <p class="text-xl font-bold text-sky-700 mt-3" id="display-rain">---</p>
+            <div class="bg-gray-800 p-4 rounded-xl shadow-lg border-t-4 border-sky-500">
+                <p class="text-sm text-gray-400 font-medium">Rain</p>
+                <p class="text-xl font-bold text-sky-400 mt-3" id="display-rain">---</p>
             </div>
         </div>
 
         <!-- Actuator Status Section -->
-        <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Control System Status</h2>
+        <h2 class="text-2xl font-bold text-gray-300 mb-4 border-b border-gray-700 pb-2">Control System Status</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-red-500 flex justify-between items-center">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-red-500 flex justify-between items-center">
                 <div>
-                    <p class="text-xl font-semibold text-gray-700">Window / Cooling</p>
-                    <p class="text-sm text-gray-500 mt-1">Controlled by Temperature & Humidity</p>
+                    <p class="text-xl font-semibold text-gray-200">Window / Cooling</p>
+                    <p class="text-sm text-gray-400 mt-1">Controlled by Temperature & Humidity</p>
                 </div>
-                <div id="status-window" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-400">---</div>
+                <div id="status-window" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-600">---</div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-blue-500 flex justify-between items-center">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-blue-500 flex justify-between items-center">
                 <div>
-                    <p class="text-xl font-semibold text-gray-700">Irrigation / Water Pump</p>
-                    <p class="text-sm text-gray-500 mt-1">Controlled by Soil Moisture & Rain</p>
+                    <p class="text-xl font-semibold text-gray-200">Irrigation / Water Pump</p>
+                    <p class="text-sm text-gray-400 mt-1">Controlled by Soil Moisture & Rain</p>
                 </div>
-                <div id="status-water" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-400">---</div>
+                <div id="status-water" class="px-3 py-1 rounded-full text-white font-bold text-sm bg-gray-600">---</div>
             </div>
         </div>
 
         <!-- Control Limits Section -->
-        <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Control Limits</h2>
+        <h2 class="text-2xl font-bold text-gray-300 mb-4 border-b border-gray-700 pb-2">Control Limits</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-green-500">
-                <p class="text-xl font-semibold text-gray-700">Window/Cooling</p>
-                <p class="text-sm text-gray-500 mt-1">Turns ON when temperature is above <strong>28.0°C</strong> or humidity is above <strong>80.0%</strong></p>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-green-500">
+                <p class="text-xl font-semibold text-gray-200">Window/Cooling</p>
+                <p class="text-sm text-gray-400 mt-1">Turns ON when temperature is above <strong class="text-green-400">28.0°C</strong> or humidity is above <strong class="text-green-400">80.0%</strong></p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-cyan-500">
-                <p class="text-xl font-semibold text-gray-700">Irrigation/Water Pump</p>
-                <p class="text-sm text-gray-500 mt-1">Turns ON when moisture is above <strong>2500</strong> and it's not raining.</p>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-cyan-500">
+                <p class="text-xl font-semibold text-gray-200">Irrigation/Water Pump</p>
+                <p class="text-sm text-gray-400 mt-1">Turns ON when moisture is above <strong class="text-cyan-400">2500</strong> and it's not raining.</p>
             </div>
         </div>
 
         <!-- Log Section -->
-        <h2 class="text-2xl font-bold text-gray-700 mb-3 border-b pb-2">Recent Data Log</h2>
+        <h2 class="text-2xl font-bold text-gray-300 mb-3 border-b border-gray-700 pb-2">Recent Data Log</h2>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-xl shadow log-table">
+            <table class="min-w-full bg-gray-800 rounded-xl shadow log-table">
                 <thead>
-                    <tr class="bg-gray-50">
-                        <th>Time</th>
-                        <th>Temp (°C)</th>
-                        <th>Humidity (%)</th>
-                        <th>Moisture</th>
-                        <th>Rain Analog</th>
-                        <th>Rain Digital</th>
-                        <th>Window</th>
-                        <th>Pump</th>
+                    <tr class="bg-gray-700">
+                        <th class="text-left text-gray-200">Time</th>
+                        <th class="text-left text-gray-200">Temp (°C)</th>
+                        <th class="text-left text-gray-200">Humidity (%)</th>
+                        <th class="text-left text-gray-200">Moisture</th>
+                        <th class="text-left text-gray-200">Rain Analog</th>
+                        <th class="text-left text-gray-200">Rain Digital</th>
+                        <th class="text-left text-gray-200">Window</th>
+                        <th class="text-left text-gray-200">Pump</th>
                     </tr>
                 </thead>
-                <tbody id="log-body">
+                <tbody id="log-body" class="text-gray-400">
                     <!-- Filled by JS -->
                 </tbody>
             </table>
@@ -106,18 +106,18 @@
         element.className = 'px-3 py-1 rounded-full text-white font-bold text-sm';
         if(status == 'ON') {
             element.classList.add('bg-red-600', 'animate-pulse');
-            element.classList.remove('bg-green-600', 'bg-gray-400');
+            element.classList.remove('bg-green-600', 'bg-gray-600');
         } else if(status == 'OFF') {
             element.classList.add('bg-green-600');
-            element.classList.remove('bg-red-600', 'bg-gray-400', 'animate-pulse');
+            element.classList.remove('bg-red-600', 'bg-gray-600', 'animate-pulse');
         } else {
-            element.classList.add('bg-gray-400');
+            element.classList.add('bg-gray-600');
         }
     }
 
     function prependLog(log) {
         const logBody = document.getElementById('log-body');
-        let newRow = `<tr>
+        let newRow = `<tr class="border-b border-gray-700">
             <td>${log.timestamp}</td>
             <td>${log.temperature != null ? log.temperature.toFixed(2) : '--'}</td>
             <td>${log.humidity != null ? log.humidity.toFixed(2) : '--'}</td>
@@ -149,7 +149,7 @@
             const logBody = document.getElementById('log-body');
             let html = "";
             for(let log of logs) {
-                html += `<tr>
+                html += `<tr class="border-b border-gray-700">
                     <td>${log.timestamp}</td>
                     <td>${log.temperature != null ? log.temperature.toFixed(2) : '--'}</td>
                     <td>${log.humidity != null ? log.humidity.toFixed(2) : '--'}</td>
@@ -176,4 +176,3 @@
     </script>
 </body>
 </html>
-
