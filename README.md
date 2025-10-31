@@ -100,12 +100,6 @@ A full-stack IoT solution to **monitor** and **control** your greenhouse with re
 
 ---
 
-## Example Screenshots
-
-*(Add screenshots here after deployment)*
-
----
-
 ## TODO
 
 - Add alerts/notifications (email/push)
@@ -116,6 +110,5 @@ A full-stack IoT solution to **monitor** and **control** your greenhouse with re
 
 ## Authors & License
 
-Built by [Your Name]  
-License: MIT
+Built by Athulkbs
 
