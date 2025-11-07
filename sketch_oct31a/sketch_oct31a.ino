@@ -6,7 +6,7 @@
 
 const char* ssid = "motog32";
 const char* password = "9988776655";
-const char* serverUrl = "http://10.208.83.119:1234/api/sensor_data";
+const char* serverUrl = "http://10.47.221.117:1234/api/sensor_data";
 
 // Pin definitions as before
 const int MOISTURE_PIN = 34;
@@ -16,6 +16,7 @@ const int WINDOW_RELAY_PIN = 2;
 const int WATER_RELAY_PIN = 4;
 
 const float TEMP_HIGH_THRESHOLD = 28.0;
+const float HUMIDITY_HIGH_THRESHOLD = 80.0;
 const int MOISTURE_LOW_THRESHOLD = 2500;
 const int RELAY_ON = LOW;  // Active LOW relay
 const int RELAY_OFF = HIGH;
@@ -42,7 +43,7 @@ void taskSensorAndRelay(void *pvParameters) {
     int rainAnalog = analogRead(RAIN_ANALOG_PIN);
     int rainDigital = digitalRead(RAIN_DIGITAL_PIN);
 
-    String relayWindowState = (temperature > TEMP_HIGH_THRESHOLD) ? "ON" : "OFF";
+    String relayWindowState = (temperature > TEMP_HIGH_THRESHOLD || humidity > HUMIDITY_HIGH_THRESHOLD) ? "ON" : "OFF";
     String relayWaterState = (moisture > MOISTURE_LOW_THRESHOLD && rainDigital != LOW) ? "ON" : "OFF";
 
     digitalWrite(WINDOW_RELAY_PIN, (relayWindowState == "ON") ? RELAY_ON : RELAY_OFF);
