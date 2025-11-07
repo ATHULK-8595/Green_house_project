@@ -6,7 +6,7 @@
 
 const char* ssid = "motog32";
 const char* password = "9988776655";
-const char* serverUrl = "http://10.208.83.117:1234/api/sensor_data";
+const char* serverUrl = "http://10.47.221.117:1234/api/sensor_data";
 
 // Pin definitions as before
 const int MOISTURE_PIN = 34;

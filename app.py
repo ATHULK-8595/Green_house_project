@@ -8,6 +8,8 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
 
+esp32_ip = None
+
 def init_db():
     conn = sqlite3.connect('greenhouse.db')
     cursor = conn.cursor()
@@ -24,6 +26,17 @@ def init_db():
             relay_water TEXT
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS control_limits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            temp_high REAL,
+            humidity_high REAL,
+            moisture_low INTEGER
+        )
+    ''')
+    cursor.execute("SELECT COUNT(*) FROM control_limits")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("INSERT INTO control_limits (temp_high, humidity_high, moisture_low) VALUES (?, ?, ?)", (28.0, 80.0, 2500))
     conn.commit()
     conn.close()
 
@@ -92,6 +105,53 @@ def logs():
 @app.route('/')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/api/get_limits', methods=['GET'])
+def get_limits():
+    conn = sqlite3.connect('greenhouse.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT temp_high, humidity_high, moisture_low FROM control_limits ORDER BY id DESC LIMIT 1')
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        keys = ['temp_high', 'humidity_high', 'moisture_low']
+        return jsonify(dict(zip(keys, row)))
+    else:
+        return jsonify({})
+
+@app.route('/api/set_limits', methods=['POST'])
+def set_limits():
+    data = request.json
+    conn = sqlite3.connect('greenhouse.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE control_limits SET temp_high = ?, humidity_high = ?, moisture_low = ? WHERE id = 1", 
+                   (data.get('temp_high'), data.get('humidity_high'), data.get('moisture_low')))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "success"})
+
+    return jsonify({"status": "success"})
+
+@app.route('/api/register_esp', methods=['POST'])
+def register_esp():
+    global esp32_ip
+    data = request.json
+    esp32_ip = data.get('ip')
+    print(f"ESP32 registered with IP: {esp32_ip}")
+    return jsonify({"status": "success"})
+
+@app.route('/api/reboot_esp', methods=['POST'])
+def reboot_esp():
+    if esp32_ip:
+        try:
+            import requests
+            requests.post(f'http://{esp32_ip}/reboot')
+            return jsonify({"status": "success"})
+        except Exception as e:
+            print(e)
+            return jsonify({"status": "error", "message": "Failed to reboot ESP32"})
+    return jsonify({"status": "error", "message": "ESP32 IP address not registered"})
+
 
 if __name__ == '__main__':
     init_db()

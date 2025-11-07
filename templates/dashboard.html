@@ -63,13 +63,14 @@
             </div>
             <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-cyan-500">
                 <p class="text-xl font-semibold text-gray-200">Irrigation/Water Pump</p>
-                <p class="text-sm text-gray-400 mt-1">Turns ON when moisture is above <strong class="text-cyan-400">2500</strong> and it's not raining.</p>
+                <p class="text-sm text-gray-400 mt-1">Turns ON when moisture is less than <strong class="text-cyan-400">1800</strong> and it's not raining.</p>
             </div>
         </div>
 
         <!-- Log Section -->
         <h2 class="text-2xl font-bold text-gray-300 mb-3 border-b border-gray-700 pb-2">Recent Data Log</h2>
-        <div class="overflow-x-auto">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl border-l-4 border-purple-500 h-96 overflow-y-auto mb-8">
+            <div class="overflow-x-auto">
             <table class="min-w-full bg-gray-800 rounded-xl shadow log-table">
                 <thead>
                     <tr class="bg-gray-700">
@@ -87,6 +88,8 @@
                     <!-- Filled by JS -->
                 </tbody>
             </table>
+            </div>
+        </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -95,7 +98,7 @@
         document.getElementById('display-temp').textContent = data.temperature !== undefined ? (data.temperature.toFixed(2) + "°C") : "--°C";
         document.getElementById('display-humidity').textContent = data.humidity !== undefined ? (data.humidity.toFixed(2) + "%") : "--%";
         document.getElementById('display-moisture').textContent = data.moisture !== undefined ? data.moisture : '--';
-        document.getElementById('display-rain').textContent = (data.rain_digital !== undefined) ? (data.rain_digital == 0 ? "Raining/Wet" : "Dry/Clear") : "---";
+        document.getElementById('display-rain').textContent = (data.rain_digital !== undefined) ? (data.rain_digital == 1 ? "Raining/Wet" : "Not Raining") : "---";
         updateStatus('status-window', data.relay_window);
         updateStatus('status-water', data.relay_water);
     }
